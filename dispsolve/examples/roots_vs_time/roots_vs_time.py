@@ -42,17 +42,18 @@ def get_dfdv( h5data, sigma=1 ):
     return h5data
 
 
-def roots_vs_time():
-    # object to facilitate storing the solution for a bunch of k's
-    class Fred():
-        def __init__(self, time, Wr_vals, Wi_vals, D_vals, D_min):
-            self.time = time
-            self.Wr_vals = Wr_vals
-            self.Wi_vals = Wi_vals
-            self.D_vals = D_vals
-            self.D_min = D_min
+# object to facilitate storing the solution for a bunch of k's
+class Fred():
+    def __init__(self, time, Wr_vals, Wi_vals, D_vals, D_min):
+        self.time = time
+        self.Wr_vals = Wr_vals
+        self.Wi_vals = Wi_vals
+        self.D_vals = D_vals
+        self.D_min = D_min
 
+def roots_vs_time():
     solns = np.array([])
+
     for file_idx in range(int(len(file_list))):
         file_path = file_list[file_idx]
         h5data = osh5io.read_h5(file_path)
@@ -98,7 +99,6 @@ def roots_vs_time():
 # -------------
 # -------------
 # get the data
-# file_list = sorted(glob.glob('../some_data/MS/PHA/p1/electrons/*.h5'))[::30]
 file_list = sorted(glob.glob('../some_other_data/MS/PHA/p1/electrons/*.h5'))[::10]
 
 # set the parameters, you either with the pro ballers or the amateurs
@@ -114,7 +114,9 @@ Wi = np.linspace(-0.4,0,128) # also, we probably only need to look for damping r
 
 
 # -------------
-# plot f, dfdv, and theory dfdv as a sanity check
+# plot f at various times
+# notice how the distribution function develops a bump around the phase velocity indicated
+# we will try to measure how this affects the damping of EPWs in the following bit of code
 # -------------
 fig, ax = plt.subplots(1,3,figsize=(16,8))#,squeeze=False)
 
@@ -125,55 +127,54 @@ ax[0].axvline(x=-.38, linestyle='--', color='r', label='rescatter EPW $v_{ph}$')
 
 h5data = osh5io.read_h5(file_list[6])
 f_data = get_f( copy.deepcopy(h5data) )
-osh5vis.osplot1d( f_data, ax=ax[0], ylim=[-.5,7], xlim=[-1,1] )
+osh5vis.osplot1d( f_data, ax=ax[1], ylim=[-.5,7], xlim=[-1,1] )
 ax[0].axvline(x=-.38, linestyle='--', color='r', label='rescatter EPW $v_{ph}$')
 
-# vvv = np.linspace(-8*vth,8*vth,len(dfdv_data.values))
-# ax[1].plot( vvv, dfMdv(vvv,vth), '--', label='analytic')
-# ax[1].legend()
+h5data = osh5io.read_h5(file_list[-1])
+f_data = get_f( copy.deepcopy(h5data) )
+osh5vis.osplot1d( f_data, ax=ax[2], ylim=[-.5,7], xlim=[-1,1] )
+ax[0].axvline(x=-.38, linestyle='--', color='r', label='rescatter EPW $v_{ph}$')
 
 fig.savefig('f_dfdv.png')
 
 
-# # -------------
-# # generate solutions as a a function of time
-# # -------------
-# solns = roots_vs_time()
-# # altenatively just load the solutions from disk if you've already calculated them
-# # and just need to edit the plot
-# solns = np.load('roots_vs_time.npy',allow_pickle=True)
+# -------------
+# generate solutions as a a function of time
+# -------------
+solns = roots_vs_time()
+# altenatively just load the solutions from disk if you've already calculated them
+# and just need to edit the plot
+solns = np.load('roots_vs_time.npy',allow_pickle=True)
 
-# # obtain time units for x axis
-# file_path = file_list[0]
-# h5data = osh5io.read_h5(file_path)
-# time_units = h5data.run_attrs['TIME UNITS']
+# obtain time units for x axis
+file_path = file_list[0]
+h5data = osh5io.read_h5(file_path)
+time_units = h5data.run_attrs['TIME UNITS']
 
-# # setup plot
-# plt.figure(figsize=(20,10))
-# ax2 = plt.subplot(1,1,1)
-# ax2.set_xlabel('$t\ [{}]$'.format(time_units))
-# ax2.set_ylabel(r'$\omega_{im} / \omega_p$')
-# ax2.grid()
+# setup plot
+plt.figure(figsize=(20,10))
+ax2 = plt.subplot(1,1,1)
+ax2.set_xlabel('$t\ [{}]$'.format(time_units))
+ax2.set_ylabel(r'$\omega_{im} / \omega_p$')
+ax2.grid()
 
-# # plot only the root that mimized D
-# x = np.array([])
-# y = np.array([])
-# for i in solns:
-#     time = i.time
-#     Wr_vals = i.Wr_vals
-#     Wi_vals = i.Wi_vals
-#     D_vals = i.D_vals
-#     D_min = i.D_min
+# plot only the root that mimized D
+x = np.array([])
+y = np.array([])
+for i in solns:
+    time = i.time
+    Wr_vals = i.Wr_vals
+    Wi_vals = i.Wi_vals
+    D_vals = i.D_vals
+    D_min = i.D_min
 
-#     for k in range(len(Wi_vals)):
-#         if D_vals[k]==D_min:
-#             x = np.append(x,time)
-#             y = np.append(y,Wi_vals[k])
+    for k in range(len(Wi_vals)):
+        if D_vals[k]==D_min:
+            x = np.append(x,time)
+            y = np.append(y,Wi_vals[k])
 
-# ax2.scatter(x,y)
-# ax2.plot(x,y,'--')
+ax2.scatter(x,y)
+ax2.plot(x,y,'--')
 
-# ax2.legend()
-
-# plt.tight_layout()
-# plt.savefig( 'roots_vs_time.png' )
+plt.tight_layout()
+plt.savefig( 'roots_vs_time.png' )

@@ -88,7 +88,7 @@ def roots_vs_k0():
 # -------------
 # -------------
 # get the data
-file_list = sorted(glob.glob('../some_data/MS/PHA/p1/electrons/*.h5'))
+file_list = sorted(glob.glob('../some_other_data/MS/PHA/p1/electrons/*.h5'))
 file_idx = 0 # at the first timestep, the dist fn is pretty much maxwellian, we'll use that for this example
 file_path = file_list[file_idx]
 h5data = osh5io.read_h5(file_path)
