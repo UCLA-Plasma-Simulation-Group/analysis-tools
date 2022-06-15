@@ -98,7 +98,7 @@ f_data = get_f( copy.deepcopy(h5data) )
 f_data.data_attrs['LONG_NAME'] = 'f_e(p_1)'
 
 # get a smoothed derivative of the data, dfdv
-dfdv_data = get_dfdv( copy.deepcopy(h5data), sigma=1)
+dfdv_data = get_dfdv( copy.deepcopy(h5data), sigma=20)
 dfdv_data.data_attrs['LONG_NAME'] = '\\frac{df_e(p_1)}{dp_1}'
 
 # set the parameters, you either with the pro ballers or the amateurs
@@ -165,13 +165,13 @@ plt.ylabel(r'$\omega_I$')
 
 plt.tight_layout()
 
-plt.savefig('dielectric.png'.format(vth,k0),dpi=200)
+plt.savefig('dielectric.png',dpi=200)
 
 
 # -------------
 # generate solutions as a function of k0
 # -------------
-# solns = roots_vs_k0()
+solns = roots_vs_k0()
 # altenatively just load the solutions from disk if you've already calculated them
 # and just need to edit the plot
 solns = np.load('roots_vs_k0.npy',allow_pickle=True)

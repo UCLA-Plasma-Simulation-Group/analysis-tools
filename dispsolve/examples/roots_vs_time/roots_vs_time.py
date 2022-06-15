@@ -105,6 +105,9 @@ file_list = sorted(glob.glob('../some_other_data/MS/PHA/p1/electrons/*.h5'))[::1
 vth = .063
 k0 = 2.75
 
+# estimate phase velocity of interest
+vph = -1 * omega_bohm_gross(k0*vth) / k0
+
 # Note: here we're basically looking for the resonance of plasma waves with negative vph
 # For me, the more natural way to do this would be to set k negative and look for positive
 # Wr values, but for some reason D_h5data does not like this...Still not sure why.
@@ -123,17 +126,18 @@ fig, ax = plt.subplots(1,3,figsize=(16,8))#,squeeze=False)
 h5data = osh5io.read_h5(file_list[0])
 f_data = get_f( copy.deepcopy(h5data) )
 osh5vis.osplot1d( f_data, ax=ax[0], ylim=[-.5,7], xlim=[-1,1] )
-ax[0].axvline(x=-.38, linestyle='--', color='r', label='rescatter EPW $v_{ph}$')
+ax[0].axvline(x=vph, linestyle='--', color='r', label='$~v_{ph}$')
+ax[0].legend()
 
 h5data = osh5io.read_h5(file_list[6])
 f_data = get_f( copy.deepcopy(h5data) )
 osh5vis.osplot1d( f_data, ax=ax[1], ylim=[-.5,7], xlim=[-1,1] )
-ax[0].axvline(x=-.38, linestyle='--', color='r', label='rescatter EPW $v_{ph}$')
+ax[1].axvline(x=vph, linestyle='--', color='r')
 
 h5data = osh5io.read_h5(file_list[-1])
 f_data = get_f( copy.deepcopy(h5data) )
 osh5vis.osplot1d( f_data, ax=ax[2], ylim=[-.5,7], xlim=[-1,1] )
-ax[0].axvline(x=-.38, linestyle='--', color='r', label='rescatter EPW $v_{ph}$')
+ax[2].axvline(x=vph, linestyle='--', color='r')
 
 fig.savefig('f_dfdv.png')
 
