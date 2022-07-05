@@ -2,14 +2,15 @@ import numpy as np
 
 def D_h5data(wr, wi, k0, h5data):
     '''
-    landau's dielectric function (eqn 8.4.8 Krall and Trivelpiece)
-    numerically integrate to compute, deforming the contour
-    accepts a distribution function defined by an array of values
-    h5data is of type H5Data from PyVisOS
-    normalizing constants are wp and c:
+    Landau's dielectric function (eqn 8.4.8 Krall and Trivelpiece) with normalizing constants
+    wp and c:
         * wr and wi are in units of wp
         * k0 is k of the EPW in units of wp/c
         * v is in units of c
+    Numerically integrate to compute, deforming the contour around the pole.
+    Accepts a distribution function defined by an array of values (h5data, which is of 
+    type H5Data from PyVisOS)
+    Solutions are values of wr, wi, and k0 for which d equals 0 for given h5data.
     '''
     # collect some values of use
     vphi = wr/k0
@@ -69,7 +70,7 @@ def D_h5data(wr, wi, k0, h5data):
 
 def get_D(Wr, Wi, k0, h5data):
     '''
-    Compute the value of the dielectric in a window of complex omega space for given k0
+    Compute the value of the dielectric in a window of complex omega for given k0
     and distribution function
     '''
     D_arr = np.zeros((len(Wi), len(Wr)), dtype = complex)

@@ -88,7 +88,7 @@ def roots_vs_k0():
 # -------------
 # -------------
 # get the data
-file_list = sorted(glob.glob('../some_other_data/MS/PHA/p1/electrons/*.h5'))
+file_list = sorted(glob.glob('../some_data/MS/PHA/p1/electrons/*.h5'))
 file_idx = 0 # at the first timestep, the dist fn is pretty much maxwellian, we'll use that for this example
 file_path = file_list[file_idx]
 h5data = osh5io.read_h5(file_path)
@@ -102,7 +102,7 @@ dfdv_data = get_dfdv( copy.deepcopy(h5data), sigma=20)
 dfdv_data.data_attrs['LONG_NAME'] = '\\frac{df_e(p_1)}{dp_1}'
 
 # set the parameters, you either with the pro ballers or the amateurs
-vth = .063                       # for the data grabbed above, vth is .063/c
+vth = .063                       # for the data grabbed above, vth was .063/c
 k0_vals = np.linspace(2.5,6,10)  # limited by the range of momenta for which f is defined in your data
 Wr = np.linspace(1,2,128)        # pick this range large enough s.t. resonant mode lies within it, but ideally no larger since solver is somewhat unstable
 Wi = np.linspace(-0.4,0,128)     # we only look for damping roots

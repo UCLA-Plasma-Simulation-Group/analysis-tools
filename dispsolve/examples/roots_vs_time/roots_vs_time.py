@@ -139,7 +139,7 @@ f_data = get_f( copy.deepcopy(h5data) )
 osh5vis.osplot1d( f_data, ax=ax[2], ylim=[-.5,7], xlim=[-1,1] )
 ax[2].axvline(x=vph, linestyle='--', color='r')
 
-fig.savefig('f_dfdv.png')
+fig.savefig('f_vs_time.png')
 
 
 # -------------
