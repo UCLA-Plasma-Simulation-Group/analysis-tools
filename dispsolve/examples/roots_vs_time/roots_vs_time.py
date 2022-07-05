@@ -99,7 +99,7 @@ def roots_vs_time():
 # -------------
 # -------------
 # get the data
-file_list = sorted(glob.glob('../some_other_data/MS/PHA/p1/electrons/*.h5'))[::10]
+file_list = sorted(glob.glob('../some_data/MS/PHA/p1/electrons/*.h5'))[::10]
 
 # set the parameters, you either with the pro ballers or the amateurs
 vth = .063
